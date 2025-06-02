@@ -1,0 +1,6 @@
+port: 8583
+host: "127.0.0.1"
+channelType: ASCII
+isoPackagerQualifiedClassName: org.jpos.iso.packager.ISO87APackager
+outRequestSubject: server.request.out
+inResponseSubject: server.response.in

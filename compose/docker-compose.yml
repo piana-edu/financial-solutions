@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  nats:
+    image: nats:2.11.4-alpine
+    container_name: nats-js
+    ports:
+      - "4222:4222"  # NATS client connections
+      - "8222:8222"  # Monitoring endpoint (HTTP)
+    command: >
+      -js
+      -m 8222
+      -sd /data/jetstream
+    volumes:
+      - ./nats-data:/data/jetstream
