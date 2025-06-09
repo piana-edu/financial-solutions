@@ -21,11 +21,11 @@
             <groupId>com.google.dagger</groupId>
             <artifactId>dagger</artifactId>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>com.google.dagger</groupId>
             <artifactId>dagger-compiler</artifactId>
             <scope>provided</scope>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>io.nats</groupId>
             <artifactId>jnats</artifactId>
@@ -89,15 +89,15 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.0</version>
                 <configuration>
-                    <annotationProcessorPaths>
+                    <!--<annotationProcessorPaths>
                         <path>
                             <groupId>com.google.dagger</groupId>
                             <artifactId>dagger-compiler</artifactId>
                             <version>2.56.2</version>
                         </path>
-                    </annotationProcessorPaths>
-                    <source>24</source> <!-- Or your Java version -->
-                    <target>24</target>
+                    </annotationProcessorPaths>-->
+                    <source>21</source> <!-- Or your Java version -->
+                    <target>21</target>
                 </configuration>
             </plugin>
         </plugins>

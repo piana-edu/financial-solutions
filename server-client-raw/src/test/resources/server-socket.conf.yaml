@@ -1,0 +1,6 @@
+host: "127.0.0.1"
+port: 8583
+backlog: 50
+bigEndian: true
+destinationSubject: server.request.out
+readTimeoutMillis: 60000

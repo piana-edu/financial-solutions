@@ -1,18 +1,19 @@
 package ir.piana.financial.solutions.isoclient;
 
-import org.jpos.iso.*;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOMsg;
 import org.jpos.iso.channel.ASCIIChannel;
-import org.jpos.iso.packager.ISO87APackager;
+import org.jpos.iso.packager.ISO87BPackager;
 
 import java.io.IOException;
 
 public class Jpos3AsciiClient {
     public static void main(String[] args) {
         String host = "localhost";
-        int port = 8000;
+        int port = 8583;
 
         // Create ASCIIChannel with ISO87APackager
-        ASCIIChannel channel = new ASCIIChannel(host, port, new ISO87APackager());
+        ASCIIChannel channel = new ASCIIChannel(host, port, new ISO87BPackager());
 
         try {
             // Connect to server

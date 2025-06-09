@@ -6,6 +6,10 @@ import org.jpos.iso.ISOPackager;
 import java.io.IOException;
 
 public class BinaryChannel extends BaseChannel {
+    public BinaryChannel() throws IOException {
+        super();
+    }
+
     public BinaryChannel(ISOPackager packager) throws IOException {
         super(packager);
     }

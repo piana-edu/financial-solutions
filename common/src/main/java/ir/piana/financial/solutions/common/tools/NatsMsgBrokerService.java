@@ -1,14 +1,21 @@
 package ir.piana.financial.solutions.common.tools;
 
 import io.nats.client.*;
+import io.nats.client.api.StorageType;
 import io.nats.client.api.StreamConfiguration;
+import io.nats.client.impl.NatsMessage;
 import ir.piana.financial.solutions.common.config.NatsConfig;
 import ir.piana.financial.solutions.common.utilities.NatsUtility;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class NatsMsgBrokerService {
     private final Connection connection;
@@ -20,6 +27,16 @@ public class NatsMsgBrokerService {
         this.connection = NatsUtility.createConnection(natsConfig);
         this.jetStream = NatsUtility.createJetStream(connection);
         this.jetStreamManagement = NatsUtility.createJetStreamManagement(connection);
+        if (natsConfig.getJetStreams() != null) {
+            natsConfig.getJetStreams().forEach(jetStream -> addStream(StreamConfiguration.builder()
+                    .name(jetStream.getName())
+                    .subjects(jetStream.getSubjects())
+                    .storageType(switch (jetStream.getStorageType().toLowerCase()) {
+                        case "memory" -> StorageType.Memory;
+                        case "file" -> StorageType.File;
+                        default -> StorageType.Memory;
+                    }).build()));
+        }
     }
 
     public Connection getConnection() {
@@ -43,6 +60,30 @@ public class NatsMsgBrokerService {
         try {
             jetStream.publish(subject, payload);
         } catch (IOException | JetStreamApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public byte[] requestReply(String subject, byte[] data, Duration timeout) {
+        try {
+            String inbox = connection.createInbox();
+            CompletableFuture<Message> future = new CompletableFuture<>();
+
+            Dispatcher dispatcher = connection.createDispatcher(future::complete);
+
+            dispatcher.subscribe(inbox);
+            dispatcher.unsubscribe(inbox, 1); // auto-unsubscribe after first message
+
+            NatsMessage msg = NatsMessage.builder()
+                    .subject(subject)
+                    .replyTo(inbox)
+                    .data(data)
+                    .build();
+
+            jetStream.publish(msg);
+            Message response = future.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+            return response.getData();
+        } catch (IOException | JetStreamApiException | InterruptedException | ExecutionException | TimeoutException e) {
             throw new RuntimeException(e);
         }
     }

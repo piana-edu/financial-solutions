@@ -1,0 +1,22 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>ir.piana.financial</groupId>
+        <artifactId>financial-solutions</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <groupId>ir.piana.financial.samples</groupId>
+    <artifactId>samples</artifactId>
+    <packaging>pom</packaging>
+    <name>samples</name>
+
+    <modules>
+        <module>iso8583-server-client</module>
+    </modules>
+
+    <properties>
+    </properties>
+</project>

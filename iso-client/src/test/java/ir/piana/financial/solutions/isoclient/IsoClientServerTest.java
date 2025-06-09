@@ -1,24 +1,29 @@
 package ir.piana.financial.solutions.isoclient;
 
+import ir.piana.financial.solutions.common.config.NatsConfig;
+import ir.piana.financial.solutions.common.tools.NatsMsgBrokerService;
 import ir.piana.financial.solutions.common.utilities.YamlConfigUtility;
 import ir.piana.financial.solutions.isoserver.IsoServerCreator;
 import ir.piana.financial.solutions.isoserver.config.IsoServerConfig;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
-import org.jpos.iso.ISOServer;
 import org.jpos.iso.channel.ASCIIChannel;
 import org.jpos.iso.packager.ISO87APackager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.concurrent.Future;
 
 public class IsoClientServerTest {
     @Test
     void test() {
+        NatsConfig natsConfig = YamlConfigUtility.load("nats.conf.yaml", NatsConfig.class);
+        NatsMsgBrokerService msgBrokerService = new NatsMsgBrokerService(natsConfig);
+
         IsoServerConfig isoServerConfig = YamlConfigUtility.load("iso-server.conf.yaml", IsoServerConfig.class);
-        ISOServer isoServer = IsoServerCreator.start(isoServerConfig);
-        Assertions.assertNotNull(isoServer);
+        Future<?> future = IsoServerCreator.start(isoServerConfig);
+        Assertions.assertNotNull(future);
 
         // Create ASCIIChannel with ISO87APackager
         ASCIIChannel channel = new ASCIIChannel(
